@@ -1,44 +1,65 @@
 -- knife script
--- skidded as hell from nameless admin and used chatgpt to play the animation
+-- skidded as hell from nameless admin for walkfling and used chatgpt to play the animation
 -- code will most likely look horrendous
-
 local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
 local animationId = 96559159
 
 -- Create and load the animation
 local animation = Instance.new("Animation")
 animation.AnimationId = "rbxassetid://" .. animationId
-local animationTrack = humanoid:LoadAnimation(animation)
 
--- Create the tool with an invisible handle
-local tool = Instance.new("Tool")
-tool.Name = "knife tool"
-tool.RequiresHandle = true  -- Handle needed for holding the tool
+-- Function to create the knife tool and add it to the player's Backpack
+local function createKnifeTool()
+    -- Create the tool with an invisible handle
+    local tool = Instance.new("Tool")
+    tool.Name = "Knife Tool"
+    tool.RequiresHandle = true  -- Handle is required for the tool to function
 
--- Create a handle part
-local handle = Instance.new("Part")
-handle.Name = "Handle"
-handle.Size = Vector3.new(1, 1, 3)  -- Adjust size as needed
-handle.Anchored = false
-handle.CanCollide = false
-handle.Transparency = 1  -- Make the handle invisible
-handle.Parent = tool
+    -- Create a handle part
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 3)  -- Adjust the size to match your knife's handle
+    handle.Anchored = false
+    handle.CanCollide = false
+    handle.Transparency = 1  -- Make the handle invisible
+    handle.Parent = tool
 
--- Set the tool's grip properties (adjust as needed for proper positioning)
-tool.GripForward = Vector3.new(0, 0, -1)
-tool.GripRight = Vector3.new(1, 0, 0)
-tool.GripUp = Vector3.new(0, 1, 0)
+    -- Set the tool's grip properties (for proper positioning when held)
+    tool.GripForward = Vector3.new(0, 0, -1)
+    tool.GripRight = Vector3.new(1, 0, 0)
+    tool.GripUp = Vector3.new(0, 1, 0)
 
--- Parent the tool to the player's backpack
-tool.Parent = player.Backpack
+    -- Parent the tool to the player's Backpack (for personal use)
+    tool.Parent = player.Backpack
 
--- Play the animation when the tool is activated
-tool.Activated:Connect(function()
-    animationTrack:Play()
+    -- Clone the tool to StarterPack so other players can access it too
+    local starterPackTool = tool:Clone()
+    starterPackTool.Parent = game:GetService("StarterPack")
+
+    -- Play the animation when the tool is activated
+    local humanoid = player.Character:WaitForChild("Humanoid")
+    local animationTrack = humanoid:LoadAnimation(animation)
+
+    tool.Activated:Connect(function()
+        animationTrack:Play()
+    end)
+
+    return tool
+end
+
+-- Handle when the player's character respawns
+player.CharacterAdded:Connect(function(newCharacter)
+    -- Wait for the humanoid to be added to the new character
+    local humanoid = newCharacter:WaitForChild("Humanoid")
+    
+    -- Create the knife tool and add it to the player's Backpack
+    createKnifeTool()
 end)
 
+-- Initial creation of the knife tool when the player first joins
+if player.Character then
+    createKnifeTool()
+end
 -- Walkfling Script (Standalone)
 
 local RunService = game:GetService("RunService")
