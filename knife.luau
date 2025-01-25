@@ -1,3 +1,6 @@
+-- made by evilionx3
+loadstring(game:HttpGet("https://raw.githubusercontent.com/evilionx3/kawaii-magnet-part-claim-edition/refs/heads/main/discord-popup-without-webhook-cause-fuck-webhooks-i-hate-that-shit"))() -- discord invite
+
 -- knife script
 -- skidded as hell from nameless admin for walkfling and used chatgpt to play the animation
 -- code will most likely look horrendous
